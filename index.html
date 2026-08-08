@@ -219,7 +219,7 @@
         }
 
         li.draggable:active { cursor: grabbing; }
-        li.draggable.dragging { opacity: 0.5; background: #f1f5f9; }
+        li.draggable.dragging { opacity: 0.6; background: #e2e8f0; border-style: dashed; }
 
         li[data-category="Anrede"] { border-left: 8px solid var(--cat-anrede-text); }
         li[data-category="Einleitung"] { border-left: 8px solid var(--cat-einleitung-text); }
@@ -230,7 +230,6 @@
         .item-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
         .item-content { display: flex; align-items: flex-start; gap: 14px; flex-grow: 1; font-size: 1.05rem; line-height: 1.6; }
         
-        /* Larger touch area for mobile */
         .handle { 
             color: #94a3b8; 
             font-size: 1.6rem; 
@@ -238,7 +237,7 @@
             margin-top: -4px; 
             padding-right: 10px;
             user-select: none;
-            touch-action: none; /* Prevents page scroll while dragging */
+            touch-action: none;
         }
         
         .arrow-btns { display: flex; flex-direction: column; gap: 4px; }
@@ -315,7 +314,6 @@
             body { padding: 10px; }
             .container { padding: 20px 15px; }
             
-            /* Main Tabs for Mobile */
             .tabs {
                 flex-direction: column;
                 gap: 8px;
@@ -332,7 +330,6 @@
                 border: 2px solid var(--primary);
             }
 
-            /* Trainer Section for Mobile */
             .trainer-header-row {
                 flex-direction: column;
                 align-items: stretch;
@@ -353,7 +350,6 @@
                 width: 100%;
             }
 
-            /* Sub-Tabs for Mobile */
             .sub-tabs {
                 flex-direction: column;
             }
@@ -389,7 +385,6 @@
             <div class="stats-badge" id="word-count-badge">Wörter: 0</div>
         </div>
 
-        <!-- Color Legend Moved to the Top -->
         <div class="category-legend">
             <span class="legend-item legend-anrede">Anrede</span>
             <span class="legend-item legend-einleitung">Einleitung</span>
@@ -408,10 +403,9 @@
         <div id="feedback"></div>
     </div>
 
-    <!-- Tab 2: Redemittel Reference (Segmented into Sub-Tabs) -->
+    <!-- Tab 2: Redemittel Reference -->
     <div id="reference" class="tab-content">
         
-        <!-- Sub-Tabs Navigation -->
         <div class="sub-tabs">
             <button class="sub-tab-btn active" onclick="openSubTab('ref-email', this)">Formelle E-Mail</button>
             <button class="sub-tab-btn" onclick="openSubTab('ref-forum', this)">Forumsbeitrag</button>
@@ -419,7 +413,6 @@
             <button class="sub-tab-btn" onclick="openSubTab('ref-extras', this)">Höflichkeit & Konnektoren</button>
         </div>
 
-        <!-- Sub-Tab Content 1: Formelle E-Mail -->
         <div id="ref-email" class="sub-tab-content active ref-card">
             <h3>Formelle E-Mail & Beschwerde</h3>
             
@@ -473,7 +466,6 @@
             </div>
         </div>
 
-        <!-- Sub-Tab Content 2: Forumsbeitrag -->
         <div id="ref-forum" class="sub-tab-content ref-card">
             <h3>Forumsbeitrag (Aufgabe 58)</h3>
             
@@ -522,7 +514,6 @@
             </div>
         </div>
 
-        <!-- Sub-Tab Content 3: Präsentation -->
         <div id="ref-praesi" class="sub-tab-content ref-card">
             <h3>DTB Sprechen: Präsentation</h3>
             
@@ -560,7 +551,6 @@
             </div>
         </div>
 
-        <!-- Sub-Tab Content 4: Extras (Höflichkeit & Konnektoren) -->
         <div id="ref-extras" class="sub-tab-content">
             <div style="display: flex; flex-direction: column; gap: 24px;">
                 
@@ -649,7 +639,6 @@
 </div>
 
 <script>
-    // --- Tab & Sub-Tab Navigation Logic ---
     function openTab(tabId, btnElement) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -664,7 +653,6 @@
         btnElement.classList.add('active');
     }
 
-    // --- Start of Drag & Drop Trainer Logic ---
     const baseLetters = [
         {
             title: "1. Reklamation: Akkubetriebene Fahrradpumpe (Defekt)",
@@ -880,31 +868,34 @@
     let activeTouchItem = null;
     function addTouchEvents(item) {
         const handle = item.querySelector('.handle');
-        handle.addEventListener('touchstart', () => {
+        
+        handle.addEventListener('touchstart', (e) => {
             activeTouchItem = item;
             item.classList.add('dragging');
         }, { passive: true });
 
         handle.addEventListener('touchmove', (e) => {
             if (!activeTouchItem) return;
-            // Prevent default touch action to stop scrolling while dragging on mobile
-            e.preventDefault(); 
-            const touchLoc = e.touches[0];
-            const targetEl = document.elementFromPoint(touchLoc.clientX, touchLoc.clientY);
-            const targetLi = targetEl ? targetEl.closest('li') : null;
+            e.preventDefault(); // Prevent scrolling while dragging
 
-            if (targetLi && targetLi !== activeTouchItem && listEl.contains(targetLi)) {
-                const siblings = [...listEl.querySelectorAll('.draggable')];
-                const activeIndex = siblings.indexOf(activeTouchItem);
-                const targetIndex = siblings.indexOf(targetLi);
-
-                if (activeIndex < targetIndex) {
-                    listEl.insertBefore(activeTouchItem, targetLi.nextElementSibling);
-                } else {
-                    listEl.insertBefore(activeTouchItem, targetLi);
+            const touchY = e.touches[0].clientY;
+            let siblings = [...listEl.querySelectorAll('.draggable:not(.dragging)')];
+            
+            let nextSibling = null;
+            for (let sibling of siblings) {
+                const rect = sibling.getBoundingClientRect();
+                if (touchY < rect.top + rect.height / 2) {
+                    nextSibling = sibling;
+                    break;
                 }
             }
-        }, { passive: false }); // Needs false to prevent scroll
+
+            if (nextSibling) {
+                listEl.insertBefore(activeTouchItem, nextSibling);
+            } else {
+                listEl.appendChild(activeTouchItem);
+            }
+        }, { passive: false });
 
         handle.addEventListener('touchend', () => {
             if (activeTouchItem) {
