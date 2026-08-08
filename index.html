@@ -58,7 +58,7 @@
             color: var(--primary);
         }
 
-        /* --- Tab System Styles --- */
+        /* --- Main Tab System Styles --- */
         .tabs {
             display: flex;
             gap: 10px;
@@ -107,24 +107,61 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* --- Sub-Tab System for Reference Page --- */
+        .sub-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sub-tab-btn {
+            background: #f1f5f9;
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #475569;
+            transition: all 0.2s;
+        }
+
+        .sub-tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .sub-tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+        }
+
         /* --- Trainer Styles --- */
         .trainer-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            gap: 15px;
         }
 
         .stats-badge {
             background: #e0f2fe;
             color: #0369a1;
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            white-space: nowrap;
         }
 
-        /* Color Legend */
         .category-legend {
             display: flex;
             flex-wrap: wrap;
@@ -159,7 +196,6 @@
             border: 2px solid var(--border);
             font-size: 1.05rem;
             width: 100%;
-            margin-bottom: 20px;
             font-weight: 600;
             cursor: pointer;
             background-color: #f8fafc;
@@ -185,7 +221,6 @@
         li.draggable:active { cursor: grabbing; }
         li.draggable.dragging { opacity: 0.5; background: #f1f5f9; }
 
-        /* Color hints acting only as left-borders now */
         li[data-category="Anrede"] { border-left: 8px solid var(--cat-anrede-text); }
         li[data-category="Einleitung"] { border-left: 8px solid var(--cat-einleitung-text); }
         li[data-category="Hauptteil"] { border-left: 8px solid var(--cat-hauptteil-text); }
@@ -194,15 +229,26 @@
 
         .item-main { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; }
         .item-content { display: flex; align-items: flex-start; gap: 14px; flex-grow: 1; font-size: 1.05rem; line-height: 1.6; }
-        .handle { color: #94a3b8; font-size: 1.6rem; cursor: grab; margin-top: -4px; user-select: none; }
+        
+        /* Larger touch area for mobile */
+        .handle { 
+            color: #94a3b8; 
+            font-size: 1.6rem; 
+            cursor: grab; 
+            margin-top: -4px; 
+            padding-right: 10px;
+            user-select: none;
+            touch-action: none; /* Prevents page scroll while dragging */
+        }
+        
         .arrow-btns { display: flex; flex-direction: column; gap: 4px; }
-        .btn-arrow { background: #f8fafc; border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; font-size: 0.9rem; cursor: pointer; }
+        .btn-arrow { background: #f8fafc; border: 1px solid var(--border); border-radius: 4px; padding: 10px 14px; font-size: 0.9rem; cursor: pointer; }
 
         li.correct { border-color: var(--correct) !important; background-color: #f0fdf4 !important; }
         li.incorrect { border-color: var(--incorrect) !important; background-color: #fef2f2 !important; }
 
         .action-btns { display: flex; gap: 12px; flex-wrap: wrap; }
-        button.main-btn { padding: 14px 24px; border-radius: 8px; border: none; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: opacity 0.2s; }
+        button.main-btn { padding: 14px 24px; border-radius: 8px; border: none; font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: opacity 0.2s; flex-grow: 1; text-align: center; }
         button.main-btn:hover { opacity: 0.8; }
         .btn-primary { background-color: var(--primary); color: white; }
         .btn-secondary { background-color: #e2e8f0; color: var(--primary); }
@@ -210,19 +256,14 @@
         
         #feedback { margin-top: 20px; padding: 16px; border-radius: 8px; font-weight: 600; font-size: 1.1rem; display: none; }
 
-        /* --- Reference Tab Grid Styles --- */
-        .ref-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 24px;
-        }
-
+        /* --- Reference Card Styles --- */
         .ref-card {
             background: #f8fafc;
             border: 1px solid var(--border);
             border-radius: 10px;
             padding: 24px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            width: 100%;
         }
 
         .ref-card h3 {
@@ -234,9 +275,7 @@
             font-size: 1.3rem;
         }
 
-        .ref-category {
-            margin-bottom: 20px;
-        }
+        .ref-category { margin-bottom: 20px; }
 
         .ref-category h4 {
             margin: 0 0 12px 0;
@@ -255,61 +294,77 @@
         .cat-schluss h4 { background-color: var(--cat-schluss-bg); color: var(--cat-schluss-text); }
         .cat-gruss h4 { background-color: var(--cat-gruss-bg); color: var(--cat-gruss-text); }
 
-        .ref-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
+        .ref-list { list-style: none; padding: 0; margin: 0; }
+        .ref-list li { position: relative; padding-left: 20px; margin-bottom: 10px; font-size: 0.98rem; line-height: 1.5; color: #334155; }
+        .ref-list li::before { content: "•"; color: var(--primary); position: absolute; left: 0; font-weight: bold; }
 
-        .ref-list li {
-            position: relative;
-            padding-left: 20px;
-            margin-bottom: 10px;
-            font-size: 0.98rem;
-            line-height: 1.5;
-            color: #334155;
-        }
-
-        .ref-list li::before {
-            content: "•";
-            color: var(--primary);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        /* Polite Expressions Table */
-        .polite-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-            background: #fff;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .polite-table th, .polite-table td {
-            text-align: left;
-            padding: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
+        .table-responsive { overflow-x: auto; }
+        .polite-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; background: #fff; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); min-width: 500px; }
+        .polite-table th, .polite-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); }
         .polite-table th { background: #f1f5f9; color: #475569; font-weight: 600; }
         .polite-table tr:last-child td { border-bottom: none; }
         .polite-table td.besser { color: var(--correct); font-weight: 600; }
         .polite-table td.statt { color: var(--incorrect); text-decoration: line-through; }
 
-        /* Connectors Tags */
-        .connector-tags span {
-            display: inline-block;
-            background: #e2e8f0;
-            color: #334155;
-            padding: 4px 10px;
-            border-radius: 16px;
-            font-size: 0.85rem;
-            margin: 2px;
-            font-weight: 500;
+        .connector-tags span { display: inline-block; background: #e2e8f0; color: #334155; padding: 6px 12px; border-radius: 20px; font-size: 0.9rem; margin: 4px; font-weight: 500; }
+
+        /* =========================================
+           MOBILE RESPONSIVENESS
+           ========================================= */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .container { padding: 20px 15px; }
+            
+            /* Main Tabs for Mobile */
+            .tabs {
+                flex-direction: column;
+                gap: 8px;
+                border-bottom: none;
+            }
+            .tab-btn {
+                border-radius: 8px;
+                border: 2px solid var(--border);
+                width: 100%;
+                text-align: center;
+                top: 0;
+            }
+            .tab-btn.active {
+                border: 2px solid var(--primary);
+            }
+
+            /* Trainer Section for Mobile */
+            .trainer-header-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .stats-badge {
+                text-align: center;
+            }
+            .item-content {
+                font-size: 0.95rem;
+            }
+            .handle {
+                font-size: 1.8rem;
+            }
+            .action-btns {
+                flex-direction: column;
+            }
+            .main-btn {
+                width: 100%;
+            }
+
+            /* Sub-Tabs for Mobile */
+            .sub-tabs {
+                flex-direction: column;
+            }
+            .sub-tab-btn {
+                width: 100%;
+                text-align: center;
+                border-radius: 8px;
+            }
+            .ref-card {
+                padding: 15px;
+            }
         }
     </style>
 </head>
@@ -320,17 +375,17 @@
         <h1>Deutsch B2/C1 Prüfungsvorbereitung</h1>
     </div>
 
-    <!-- Tabs Navigation -->
+    <!-- Main Tabs Navigation -->
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab('trainer', this)">📝 Drag & Drop Brief Trainer</button>
-        <button class="tab-btn" onclick="openTab('reference', this)">📚 Redemittel & Formulierungshilfen</button>
+        <button class="tab-btn" onclick="openTab('reference', this)">📚 Redemittel & Hilfen</button>
     </div>
     
     <!-- Tab 1: Trainer -->
     <div id="trainer" class="tab-content active">
         
         <div class="trainer-header-row">
-            <select id="letter-select" onchange="loadLetter()" style="margin-bottom: 0; width: 70%;"></select>
+            <select id="letter-select" onchange="loadLetter()"></select>
             <div class="stats-badge" id="word-count-badge">Wörter: 0</div>
         </div>
 
@@ -348,205 +403,214 @@
         <div class="action-btns">
             <button class="main-btn btn-primary" onclick="checkOrder()">✓ Überprüfen</button>
             <button class="main-btn btn-secondary" onclick="loadLetter()">🔄 Mischen</button>
-            <button id="download-btn" class="main-btn btn-download" onclick="downloadLetter()">⬇️ Als .txt herunterladen</button>
+            <button id="download-btn" class="main-btn btn-download" onclick="downloadLetter()">⬇️ Herunterladen</button>
         </div>
         <div id="feedback"></div>
     </div>
 
-    <!-- Tab 2: Redemittel Reference (Digitized from notes) -->
+    <!-- Tab 2: Redemittel Reference (Segmented into Sub-Tabs) -->
     <div id="reference" class="tab-content">
-        <div class="ref-grid">
+        
+        <!-- Sub-Tabs Navigation -->
+        <div class="sub-tabs">
+            <button class="sub-tab-btn active" onclick="openSubTab('ref-email', this)">Formelle E-Mail</button>
+            <button class="sub-tab-btn" onclick="openSubTab('ref-forum', this)">Forumsbeitrag</button>
+            <button class="sub-tab-btn" onclick="openSubTab('ref-praesi', this)">Präsentation</button>
+            <button class="sub-tab-btn" onclick="openSubTab('ref-extras', this)">Höflichkeit & Konnektoren</button>
+        </div>
+
+        <!-- Sub-Tab Content 1: Formelle E-Mail -->
+        <div id="ref-email" class="sub-tab-content active ref-card">
+            <h3>Formelle E-Mail & Beschwerde</h3>
             
-            <!-- Card: Formelle E-Mail & Beschwerde -->
-            <div class="ref-card">
-                <h3>Formelle E-Mail & Beschwerde</h3>
-                
-                <div class="ref-category cat-anrede">
-                    <h4>Anrede</h4>
-                    <ul class="ref-list">
-                        <li>Sehr geehrte Damen und Herren,</li>
-                        <li>Sehr geehrte Frau ... / Sehr geehrter Herr ...</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-einleitung">
-                    <h4>Einleitung & Bezug</h4>
-                    <ul class="ref-list">
-                        <li>Vielen Dank für Ihre Nachricht / Ihre E-Mail vom ...</li>
-                        <li>Bezugnehmend auf Ihr Schreiben vom ...</li>
-                        <li>Wir haben Ihre Reklamation erhalten und geprüft.</li>
-                        <li>Mit Bedauern haben wir von Ihrer Unzufriedenheit erfahren.</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-hauptteil">
-                    <h4>Verständnis & Ursache</h4>
-                    <ul class="ref-list">
-                        <li>Wir können Ihren Ärger gut nachvollziehen.</li>
-                        <li>Für die entstandenen Unannehmlichkeiten möchten wir uns entschuldigen.</li>
-                        <li>Es tut uns sehr leid, dass ...</li>
-                        <li>Leider kam es aufgrund von [Gründen] zu Verzögerungen.</li>
-                        <li>Der Grund dafür war ... / Wegen eines technischen Problems ...</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-hauptteil">
-                    <h4>Lösung & Verantwortung</h4>
-                    <ul class="ref-list">
-                        <li>Wir übernehmen die volle Verantwortung.</li>
-                        <li>Der Fehler liegt auf unserer Seite.</li>
-                        <li>Wir bieten Ihnen folgende Lösung an: ...</li>
-                        <li>Wir senden Ihnen kostenlos Ersatz.</li>
-                        <li>Wir bitten Sie, uns folgende Unterlagen zukommen zu lassen: ...</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-schluss">
-                    <h4>Abschluss</h4>
-                    <ul class="ref-list">
-                        <li>Wir werden alles dafür tun, dass sich ein solcher Vorfall nicht wiederholt.</li>
-                        <li>Wir hoffen, dass wir die Angelegenheit zu Ihrer Zufriedenheit lösen konnten.</li>
-                        <li>Für weitere Fragen stehen wir Ihnen jederzeit gerne zur Verfügung.</li>
-                    </ul>
-                </div>
+            <div class="ref-category cat-anrede">
+                <h4>Anrede</h4>
+                <ul class="ref-list">
+                    <li>Sehr geehrte Damen und Herren,</li>
+                    <li>Sehr geehrte Frau ... / Sehr geehrter Herr ...</li>
+                </ul>
             </div>
 
-            <!-- Card: Forumsbeitrag -->
-            <div class="ref-card">
-                <h3>Forumsbeitrag (Aufgabe 58)</h3>
-                
-                <div class="ref-category cat-anrede">
-                    <h4>Begrüßung</h4>
-                    <ul class="ref-list">
-                        <li>Hallo zusammen, / Liebe Kolleginnen und Kollegen,</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-einleitung">
-                    <h4>Thema benennen</h4>
-                    <ul class="ref-list">
-                        <li>Viele von euch / Ihnen habt ihr schon gehört, dass ...</li>
-                        <li>Wahrscheinlich wisst ihr schon, dass ...</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-hauptteil">
-                    <h4>Meinung sagen</h4>
-                    <ul class="ref-list">
-                        <li>Ich finde, das ist (k)eine gute Idee.</li>
-                        <li>Das ist (k)ein guter / schlechter / interessanter Vorschlag.</li>
-                        <li>Ich bin nicht sicher, was ich davon halten soll.</li>
-                        <li>Meiner Meinung nach ... / Ich bin der Ansicht, dass ...</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-hauptteil">
-                    <h4>Argumente nennen</h4>
-                    <ul class="ref-list">
-                        <li>Ich bin dafür / dagegen, weil ...</li>
-                        <li>Ein Argument dafür / dagegen ist, dass ...</li>
-                        <li>Einerseits ... Andererseits ...</li>
-                        <li>Auf der einen Seite ... Auf der anderen Seite ...</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-schluss">
-                    <h4>Zusammenfassung & Fragen</h4>
-                    <ul class="ref-list">
-                        <li>Abschließend / Zusammenfassend möchte ich sagen, dass ...</li>
-                        <li>Mich würde eure Meinung dazu interessieren. Wie seht ihr das?</li>
-                        <li>Was meint ihr? Schreibt doch auch eure Meinung.</li>
-                    </ul>
-                </div>
+            <div class="ref-category cat-einleitung">
+                <h4>Einleitung & Bezug</h4>
+                <ul class="ref-list">
+                    <li>Vielen Dank für Ihre Nachricht / Ihre E-Mail vom ...</li>
+                    <li>Bezugnehmend auf Ihr Schreiben vom ...</li>
+                    <li>Wir haben Ihre Reklamation erhalten und geprüft.</li>
+                    <li>Mit Bedauern haben wir von Ihrer Unzufriedenheit erfahren.</li>
+                </ul>
             </div>
 
-            <!-- Card: Präsentation & Sprechen -->
-            <div class="ref-card">
-                <h3>DTB Sprechen: Präsentation</h3>
-                
-                <div class="ref-category cat-einleitung">
-                    <h4>Einleitung & Struktur</h4>
-                    <ul class="ref-list">
-                        <li>Heute möchte ich über das Thema ... sprechen.</li>
-                        <li>Ich habe das Thema ... gewählt, weil ...</li>
-                        <li>Dieses Thema ist heutzutage sehr aktuell/wichtig.</li>
-                        <li>Ich habe meinen Vortrag in ... Teile gegliedert.</li>
-                        <li>Zunächst spreche ich über ... Danach möchte ich auf den Punkt ... eingehen.</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-hauptteil">
-                    <h4>Vor-/Nachteile & Übergänge</h4>
-                    <ul class="ref-list">
-                        <li>Besonders positiv finde ich, dass ...</li>
-                        <li>Problematisch ist / Ein Nachteil ist jedoch, dass ...</li>
-                        <li>Andererseits darf man nicht vergessen, dass ...</li>
-                        <li>Ein gutes Beispiel dafür ist ... / Zum Beispiel ...</li>
-                        <li>Kommen wir nun zum nächsten Punkt.</li>
-                        <li>Der Grund dafür ist / Das liegt daran, dass ...</li>
-                    </ul>
-                </div>
-
-                <div class="ref-category cat-schluss">
-                    <h4>Schluss & Rückfragen</h4>
-                    <ul class="ref-list">
-                        <li>Zusammenfassend kann man sagen, dass ...</li>
-                        <li>Das ist alles, was ich dazu sagen möchte.</li>
-                        <li>Danke für Ihre Aufmerksamkeit. Ich freue mich auf Ihre Fragen.</li>
-                        <li>Das ist eine interessante Frage. Dazu kann ich sagen, dass ...</li>
-                    </ul>
-                </div>
+            <div class="ref-category cat-hauptteil">
+                <h4>Verständnis & Ursache</h4>
+                <ul class="ref-list">
+                    <li>Wir können Ihren Ärger gut nachvollziehen.</li>
+                    <li>Für die entstandenen Unannehmlichkeiten möchten wir uns entschuldigen.</li>
+                    <li>Es tut uns sehr leid, dass ...</li>
+                    <li>Leider kam es aufgrund von [Gründen] zu Verzögerungen.</li>
+                    <li>Der Grund dafür war ... / Wegen eines technischen Problems ...</li>
+                </ul>
             </div>
 
-            <!-- Grouped Block: Höfliche Sprache & Konnektoren -->
+            <div class="ref-category cat-hauptteil">
+                <h4>Lösung & Verantwortung</h4>
+                <ul class="ref-list">
+                    <li>Wir übernehmen die volle Verantwortung.</li>
+                    <li>Der Fehler liegt auf unserer Seite.</li>
+                    <li>Wir bieten Ihnen folgende Lösung an: ...</li>
+                    <li>Wir senden Ihnen kostenlos Ersatz.</li>
+                    <li>Wir bitten Sie, uns folgende Unterlagen zukommen zu lassen: ...</li>
+                </ul>
+            </div>
+
+            <div class="ref-category cat-schluss">
+                <h4>Abschluss</h4>
+                <ul class="ref-list">
+                    <li>Wir werden alles dafür tun, dass sich ein solcher Vorfall nicht wiederholt.</li>
+                    <li>Wir hoffen, dass wir die Angelegenheit zu Ihrer Zufriedenheit lösen konnten.</li>
+                    <li>Für weitere Fragen stehen wir Ihnen jederzeit gerne zur Verfügung.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sub-Tab Content 2: Forumsbeitrag -->
+        <div id="ref-forum" class="sub-tab-content ref-card">
+            <h3>Forumsbeitrag (Aufgabe 58)</h3>
+            
+            <div class="ref-category cat-anrede">
+                <h4>Begrüßung</h4>
+                <ul class="ref-list">
+                    <li>Hallo zusammen, / Liebe Kolleginnen und Kollegen,</li>
+                </ul>
+            </div>
+
+            <div class="ref-category cat-einleitung">
+                <h4>Thema benennen</h4>
+                <ul class="ref-list">
+                    <li>Viele von euch / Ihnen habt ihr schon gehört, dass ...</li>
+                    <li>Wahrscheinlich wisst ihr schon, dass ...</li>
+                </ul>
+            </div>
+
+            <div class="ref-category cat-hauptteil">
+                <h4>Meinung sagen</h4>
+                <ul class="ref-list">
+                    <li>Ich finde, das ist (k)eine gute Idee.</li>
+                    <li>Das ist (k)ein guter / schlechter / interessanter Vorschlag.</li>
+                    <li>Ich bin nicht sicher, was ich davon halten soll.</li>
+                    <li>Meiner Meinung nach ... / Ich bin der Ansicht, dass ...</li>
+                </ul>
+            </div>
+
+            <div class="ref-category cat-hauptteil">
+                <h4>Argumente nennen</h4>
+                <ul class="ref-list">
+                    <li>Ich bin dafür / dagegen, weil ...</li>
+                    <li>Ein Argument dafür / dagegen ist, dass ...</li>
+                    <li>Einerseits ... Andererseits ...</li>
+                    <li>Auf der einen Seite ... Auf der anderen Seite ...</li>
+                </ul>
+            </div>
+
+            <div class="ref-category cat-schluss">
+                <h4>Zusammenfassung & Fragen</h4>
+                <ul class="ref-list">
+                    <li>Abschließend / Zusammenfassend möchte ich sagen, dass ...</li>
+                    <li>Mich würde eure Meinung dazu interessieren. Wie seht ihr das?</li>
+                    <li>Was meint ihr? Schreibt doch auch eure Meinung.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sub-Tab Content 3: Präsentation -->
+        <div id="ref-praesi" class="sub-tab-content ref-card">
+            <h3>DTB Sprechen: Präsentation</h3>
+            
+            <div class="ref-category cat-einleitung">
+                <h4>Einleitung & Struktur</h4>
+                <ul class="ref-list">
+                    <li>Heute möchte ich über das Thema ... sprechen.</li>
+                    <li>Ich habe das Thema ... gewählt, weil ...</li>
+                    <li>Dieses Thema ist heutzutage sehr aktuell/wichtig.</li>
+                    <li>Ich habe meinen Vortrag in ... Teile gegliedert.</li>
+                    <li>Zunächst spreche ich über ... Danach möchte ich auf den Punkt ... eingehen.</li>
+                </ul>
+            </div>
+
+            <div class="ref-category cat-hauptteil">
+                <h4>Vor-/Nachteile & Übergänge</h4>
+                <ul class="ref-list">
+                    <li>Besonders positiv finde ich, dass ...</li>
+                    <li>Problematisch ist / Ein Nachteil ist jedoch, dass ...</li>
+                    <li>Andererseits darf man nicht vergessen, dass ...</li>
+                    <li>Ein gutes Beispiel dafür ist ... / Zum Beispiel ...</li>
+                    <li>Kommen wir nun zum nächsten Punkt.</li>
+                    <li>Der Grund dafür ist / Das liegt daran, dass ...</li>
+                </ul>
+            </div>
+
+            <div class="ref-category cat-schluss">
+                <h4>Schluss & Rückfragen</h4>
+                <ul class="ref-list">
+                    <li>Zusammenfassend kann man sagen, dass ...</li>
+                    <li>Das ist alles, was ich dazu sagen möchte.</li>
+                    <li>Danke für Ihre Aufmerksamkeit. Ich freue mich auf Ihre Fragen.</li>
+                    <li>Das ist eine interessante Frage. Dazu kann ich sagen, dass ...</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sub-Tab Content 4: Extras (Höflichkeit & Konnektoren) -->
+        <div id="ref-extras" class="sub-tab-content">
             <div style="display: flex; flex-direction: column; gap: 24px;">
-                <!-- Card: Höfliche Sprache (B2/C1 Upgrade) -->
-                <div class="ref-card" style="margin: 0; flex-grow: 1;">
+                
+                <div class="ref-card">
                     <h3>Höfliche Sprache (B2)</h3>
                     <p style="font-size: 0.9rem; color: #64748b; margin-top: -10px; margin-bottom: 15px;">Formulierungen professionell verbessern.</p>
                     
-                    <table class="polite-table">
-                        <thead>
-                            <tr>
-                                <th>Statt ...</th>
-                                <th>Besser ...</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="statt">Das geht nicht.</td>
-                                <td class="besser">Leider ist dies derzeit nicht möglich.</td>
-                            </tr>
-                            <tr>
-                                <td class="statt">Sie haben recht.</td>
-                                <td class="besser">Ihr Anliegen ist nachvollziehbar.</td>
-                            </tr>
-                            <tr>
-                                <td class="statt">Wir machen das.</td>
-                                <td class="besser">Gerne kümmern wir uns darum.</td>
-                            </tr>
-                            <tr>
-                                <td class="statt">Das war unser Fehler.</td>
-                                <td class="besser">Der Fehler liegt auf unserer Seite.</td>
-                            </tr>
-                            <tr>
-                                <td class="statt">Wir schicken neu.</td>
-                                <td class="besser">Selbstverständlich senden wir Ihnen Ersatz zu.</td>
-                            </tr>
-                            <tr>
-                                <td class="statt">Warten Sie.</td>
-                                <td class="besser">Wir bitten Sie noch um etwas Geduld.</td>
-                            </tr>
-                            <tr>
-                                <td class="statt">Wir prüfen das.</td>
-                                <td class="besser">Wir werden den Sachverhalt sorgfältig prüfen.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="polite-table">
+                            <thead>
+                                <tr>
+                                    <th>Statt ...</th>
+                                    <th>Besser ...</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="statt">Das geht nicht.</td>
+                                    <td class="besser">Leider ist dies derzeit nicht möglich.</td>
+                                </tr>
+                                <tr>
+                                    <td class="statt">Sie haben recht.</td>
+                                    <td class="besser">Ihr Anliegen ist nachvollziehbar.</td>
+                                </tr>
+                                <tr>
+                                    <td class="statt">Wir machen das.</td>
+                                    <td class="besser">Gerne kümmern wir uns darum.</td>
+                                </tr>
+                                <tr>
+                                    <td class="statt">Das war unser Fehler.</td>
+                                    <td class="besser">Der Fehler liegt auf unserer Seite.</td>
+                                </tr>
+                                <tr>
+                                    <td class="statt">Wir schicken neu.</td>
+                                    <td class="besser">Selbstverständlich senden wir Ihnen Ersatz zu.</td>
+                                </tr>
+                                <tr>
+                                    <td class="statt">Warten Sie.</td>
+                                    <td class="besser">Wir bitten Sie noch um etwas Geduld.</td>
+                                </tr>
+                                <tr>
+                                    <td class="statt">Wir prüfen das.</td>
+                                    <td class="besser">Wir werden den Sachverhalt sorgfältig prüfen.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <!-- Card: Nützliche Konnektoren -->
-                <div class="ref-card" style="margin: 0;">
+                <div class="ref-card">
                     <h3>Nützliche Konnektoren</h3>
                     
                     <div class="ref-category cat-hauptteil">
@@ -579,16 +643,23 @@
                     </div>
                 </div>
             </div>
-            
         </div>
+
     </div>
 </div>
 
 <script>
-    // Tab switching logic
+    // --- Tab & Sub-Tab Navigation Logic ---
     function openTab(tabId, btnElement) {
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btnElement.classList.add('active');
+    }
+
+    function openSubTab(tabId, btnElement) {
+        document.querySelectorAll('.sub-tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.sub-tab-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
         btnElement.classList.add('active');
     }
@@ -816,6 +887,8 @@
 
         handle.addEventListener('touchmove', (e) => {
             if (!activeTouchItem) return;
+            // Prevent default touch action to stop scrolling while dragging on mobile
+            e.preventDefault(); 
             const touchLoc = e.touches[0];
             const targetEl = document.elementFromPoint(touchLoc.clientX, touchLoc.clientY);
             const targetLi = targetEl ? targetEl.closest('li') : null;
@@ -831,7 +904,7 @@
                     listEl.insertBefore(activeTouchItem, targetLi);
                 }
             }
-        }, { passive: true });
+        }, { passive: false }); // Needs false to prevent scroll
 
         handle.addEventListener('touchend', () => {
             if (activeTouchItem) {
