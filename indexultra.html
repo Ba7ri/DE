@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>B2/C1 Letter Lab — 100+ Briefe Trainer</title>
+<style>
+:root{
+  --bg:#070b16;--bg2:#0d1324;--panel:rgba(17,24,39,.82);--panel2:#111a2f;
+  --text:#edf2ff;--muted:#9aa8c7;--line:#273452;--accent:#7c5cff;--accent2:#22d3ee;
+  --good:#35d07f;--bad:#ff647c;--warn:#ffca5c;--shadow:0 24px 70px rgba(0,0,0,.35);
+  --r:20px;--r2:14px;
+  --anrede:#38bdf8;--intro:#c084fc;--body:#facc15;--close:#4ade80;--greet:#fb7185;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%,rgba(124,92,255,.22),transparent 32rem),
+    radial-gradient(circle at 100% 10%,rgba(34,211,238,.12),transparent 28rem),
+    linear-gradient(135deg,var(--bg),#0a1020 55%,#080d18);
+}
+button,select,input{font:inherit}
+button{color:inherit}
+.app{width:min(1480px,calc(100% - 28px));margin:0 auto;padding:22px 0 50px}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px;
+  position:sticky;top:10px;z-index:20;padding:12px 14px;border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;background:rgba(7,11,22,.72);backdrop-filter:blur(18px);box-shadow:0 12px 35px rgba(0,0,0,.2)
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--accent),#4f46e5);box-shadow:0 8px 25px rgba(124,92,255,.35);font-weight:900}
+.brand strong{font-size:1.03rem}.brand small{display:block;color:var(--muted);font-size:.72rem;margin-top:2px}
+.top-actions{display:flex;gap:8px;align-items:center}
+.icon-btn,.ghost-btn{
+  border:1px solid var(--line);background:rgba(255,255,255,.035);padding:10px 13px;border-radius:12px;
+  cursor:pointer;transition:.2s
+}
+.icon-btn:hover,.ghost-btn:hover{border-color:#52648f;transform:translateY(-1px)}
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-bottom:18px}
+.hero-card,.panel{border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);border-radius:var(--r)}
+.hero-card{padding:30px;position:relative;overflow:hidden}
+.hero-card:after{content:"";position:absolute;width:280px;height:280px;border-radius:50%;right:-120px;top:-140px;
+  background:radial-gradient(circle,rgba(124,92,255,.34),transparent 68%);pointer-events:none}
+.eyebrow{color:#aebcff;text-transform:uppercase;letter-spacing:.14em;font-weight:800;font-size:.7rem}
+h1{font-size:clamp(2rem,4vw,4rem);line-height:.98;margin:12px 0 15px;letter-spacing:-.045em}
+.hero p{color:var(--muted);max-width:720px;line-height:1.7;margin:0}
+.hero-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.metric{padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025)}
+.metric b{display:block;font-size:1.65rem}.metric span{color:var(--muted);font-size:.78rem}
+.nav{display:flex;gap:8px;margin-bottom:18px;overflow:auto;padding-bottom:2px}
+.nav button{white-space:nowrap;border:1px solid var(--line);background:rgba(255,255,255,.025);padding:11px 16px;border-radius:12px;cursor:pointer;color:var(--muted)}
+.nav button.active{background:linear-gradient(135deg,rgba(124,92,255,.25),rgba(34,211,238,.09));color:white;border-color:#5d55a0}
+.view{display:none}.view.active{display:block}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px}
+.panel{padding:20px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.panel h2{margin:0;font-size:1.05rem}.muted{color:var(--muted)}
+select,input[type=search]{
+  width:100%;background:#0b1222;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none
+}
+select:focus,input:focus{border-color:#6d62cf;box-shadow:0 0 0 3px rgba(124,92,255,.12)}
+.controls{display:grid;grid-template-columns:1fr auto auto;gap:9px;margin-bottom:14px}
+.pill{border:1px solid var(--line);padding:8px 11px;border-radius:999px;color:var(--muted);font-size:.78rem;white-space:nowrap}
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 14px}
+.legend span{font-size:.69rem;font-weight:800;letter-spacing:.06em;padding:6px 9px;border-radius:8px}
+.c-anrede{background:rgba(56,189,248,.14);color:var(--anrede)}.c-intro{background:rgba(192,132,252,.14);color:var(--intro)}
+.c-body{background:rgba(250,204,21,.13);color:var(--body)}.c-close{background:rgba(74,222,128,.13);color:var(--close)}
+.c-greet{background:rgba(251,113,133,.13);color:var(--greet)}
+#sentenceList{display:grid;gap:9px;list-style:none;padding:0;margin:0}
+.sentence{
+  display:grid;grid-template-columns:34px 1fr 76px;gap:10px;align-items:center;
+  padding:15px;border:1px solid var(--line);border-left:4px solid var(--cat);
+  border-radius:14px;background:rgba(255,255,255,.025);cursor:grab;transition:.16s
+}
+.sentence:hover{background:rgba(255,255,255,.045);transform:translateX(2px)}
+.sentence.dragging{opacity:.45;transform:scale(.985)}
+.sentence.correct{border-color:rgba(53,208,127,.6);background:rgba(53,208,127,.08)}
+.sentence.incorrect{border-color:rgba(255,100,124,.6);background:rgba(255,100,124,.07)}
+.handle{color:#667596;font-size:1.1rem;user-select:none}
+.sentence-text{line-height:1.55;font-size:.95rem}
+.cat-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;font-weight:900;margin-top:5px;display:inline-block;color:var(--cat)}
+.move{display:flex;gap:4px;justify-content:flex-end}
+.move button{border:1px solid var(--line);background:#0b1222;border-radius:8px;padding:7px 9px;cursor:pointer}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:800;cursor:pointer;transition:.2s}
+.btn:hover{transform:translateY(-1px)}.primary{background:linear-gradient(135deg,var(--accent),#5b4be8);color:white}
+.secondary{background:#172139;border:1px solid var(--line)}.success{background:rgba(53,208,127,.15);color:var(--good);border:1px solid rgba(53,208,127,.25)}
+.feedback{display:none;margin-top:13px;padding:13px 15px;border-radius:12px;font-weight:700}
+.feedback.show{display:block}.feedback.good{background:rgba(53,208,127,.1);color:var(--good)}.feedback.bad{background:rgba(255,100,124,.1);color:var(--bad)}
+.side-card{margin-bottom:14px}.side-card:last-child{margin-bottom:0}
+.progress{height:8px;background:#1a243b;border-radius:99px;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:99px;transition:.4s}
+.stat-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:.86rem}.stat-row:last-child{border:0}
+.kbd{font-family:ui-monospace,monospace;font-size:.7rem;padding:3px 6px;border:1px solid #394765;border-radius:5px;color:#b7c2dc}
+.ref-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.ref-card{padding:20px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025)}
+.ref-card h3{margin:0 0 13px;font-size:1rem}.ref-card ul{margin:0;padding-left:18px;color:#c4cde0;line-height:1.7}.ref-card li{margin-bottom:5px}
+.callout{padding:14px;border-radius:13px;background:linear-gradient(135deg,rgba(124,92,255,.12),rgba(34,211,238,.06));border:1px solid rgba(124,92,255,.2);line-height:1.55}
+.search-results{display:grid;gap:8px;margin-top:12px;max-height:520px;overflow:auto}.result{padding:12px;border:1px solid var(--line);border-radius:11px;cursor:pointer}.result:hover{border-color:#56648c}.result b{font-size:.83rem}.result small{display:block;color:var(--muted);margin-top:4px}
+.badge-row{display:flex;gap:7px;flex-wrap:wrap}.tag{font-size:.72rem;color:#c7d0e4;background:#151f35;border:1px solid #283655;padding:6px 8px;border-radius:8px}
+.empty{padding:30px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px}
+.exam{max-width:900px;margin:auto}.exam-question{font-size:1.2rem;line-height:1.6;margin:16px 0}
+.options{display:grid;gap:9px}.option{padding:15px;text-align:left;background:#0d1629;border:1px solid var(--line);border-radius:13px;cursor:pointer}
+.option:hover{border-color:#5e6e98}.option.selected{border-color:var(--accent);background:rgba(124,92,255,.12)}.option.good{border-color:var(--good);background:rgba(53,208,127,.1)}.option.bad{border-color:var(--bad);background:rgba(255,100,124,.1)}
+.toast{position:fixed;right:20px;bottom:20px;padding:13px 16px;border-radius:12px;background:#111a2f;border:1px solid #354568;box-shadow:var(--shadow);transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s;z-index:50}.toast.show{transform:none;opacity:1}
+@media(max-width:980px){.hero,.grid{grid-template-columns:1fr}.hero-metrics{grid-template-columns:repeat(4,1fr)}.side{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.side-card{margin:0}.ref-grid{grid-template-columns:1fr}}
+@media(max-width:650px){
+ .app{width:min(100% - 16px,1480px);padding-top:8px}.topbar{position:relative;top:0}.hero-card{padding:22px}h1{font-size:2.3rem}
+ .hero-metrics{grid-template-columns:repeat(2,1fr)}.controls{grid-template-columns:1fr}.sentence{grid-template-columns:25px 1fr}.move{grid-column:2;justify-content:flex-start}
+ .side{display:block}.side-card{margin-bottom:12px}.panel{padding:14px}.nav{margin-bottom:12px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand"><div class="logo">B2</div><div><strong>Letter Lab</strong><small>Deutsch B2/C1 Prüfungstrainer</small></div></div>
+  <div class="top-actions"><button class="icon-btn" id="themeBtn" title="Theme">☼</button><button class="ghost-btn" id="resetBtn">↺ Fortschritt</button></div>
+</header>
+
+<section class="hero">
+  <div class="hero-card">
+    <div class="eyebrow">Exam Training System</div>
+    <h1>100+ Briefe.<br>Ein Trainer.</h1>
+    <p>Ordne Textbausteine, trainiere Redemittel, suche gezielt nach Themen und verfolge deinen Lernfortschritt. Alles lokal im Browser — ohne Framework und ohne Backend.</p>
+  </div>
+  <div class="hero-card">
+    <div class="eyebrow">Dein Fortschritt</div>
+    <div class="hero-metrics">
+      <div class="metric"><b id="mSolved">0</b><span>Versuche</span></div>
+      <div class="metric"><b id="mPerfect">0</b><span>Perfekt</span></div>
+      <div class="metric"><b id="mRate">0%</b><span>Trefferquote</span></div>
+      <div class="metric"><b id="mStreak">0</b><span>Streak</span></div>
+    </div>
+  </div>
+</section>
+
+<nav class="nav">
+ <button class="active" data-view="trainer">🧩 Trainer</button>
+ <button data-view="library">📚 Redemittel</button>
+ <button data-view="search">🔎 Suche</button>
+ <button data-view="exam">🎯 Prüfungsmodus</button>
+</nav>
+
+<main>
+<section class="view active" id="trainer">
+ <div class="grid">
+  <div class="panel">
+   <div class="panel-head"><div><h2>Brief auswählen</h2><span class="muted" id="letterMeta">Bereit</span></div><span class="pill" id="wordBadge">0 Wörter</span></div>
+   <div class="controls">
+    <select id="letterSelect"></select>
+    <button class="btn secondary" id="shuffleBtn">🔀 Mischen</button>
+    <button class="btn secondary" id="randomBtn">🎲 Zufall</button>
+   </div>
+   <div class="legend">
+    <span class="c-anrede">Anrede</span><span class="c-intro">Einleitung</span><span class="c-body">Hauptteil</span><span class="c-close">Schlusssatz</span><span class="c-greet">Grußformel</span>
+   </div>
+   <ul id="sentenceList"></ul>
+   <div class="actions">
+    <button class="btn primary" id="checkBtn">✓ Reihenfolge prüfen</button>
+    <button class="btn secondary" id="solutionBtn">👁 Lösung zeigen</button>
+    <button class="btn success" id="downloadBtn">⬇ Brief exportieren</button>
+   </div>
+   <div class="feedback" id="feedback"></div>
+  </div>
+  <aside class="side">
+   <div class="panel side-card">
+    <div class="panel-head"><h2>Session</h2><span class="pill" id="sessionScore">0 XP</span></div>
+    <div class="progress"><i id="progressBar"></i></div>
+    <div class="stat-row"><span>Brief</span><b id="sideIndex">1 / 100</b></div>
+    <div class="stat-row"><span>Richtige Positionen</span><b id="sideCorrect">—</b></div>
+    <div class="stat-row"><span>Schwierigkeit</span><b id="sideDiff">B2</b></div>
+   </div>
+   <div class="panel side-card">
+    <h2 style="margin-top:0">⌨ Schnellsteuerung</h2>
+    <p class="muted" style="font-size:.83rem;line-height:1.6">Nutze <span class="kbd">↑</span> <span class="kbd">↓</span> für die markierte Zeile. <span class="kbd">Enter</span> prüft die Lösung.</p>
+   </div>
+   <div class="panel side-card">
+    <h2 style="margin-top:0">💡 Lernstrategie</h2>
+    <div class="callout">Erkenne zuerst <b>Anrede → Einleitung → Argumente → Forderung/Schluss → Grußformel</b>. Danach achtest du auf Konnektoren und logische Übergänge.</div>
+   </div>
+  </aside>
+ </div>
+</section>
+
+<section class="view" id="library">
+ <div class="panel">
+  <div class="panel-head"><div><h2>Redemittel & B2/C1-Bausteine</h2><span class="muted">Nach Funktion statt nach Auswendiglernen.</span></div></div>
+  <div class="ref-grid" id="refGrid"></div>
+ </div>
+</section>
+
+<section class="view" id="search">
+ <div class="grid">
+  <div class="panel">
+   <div class="panel-head"><div><h2>Brief-Suche</h2><span class="muted">Thema, Situation oder Formulierung durchsuchen.</span></div></div>
+   <input type="search" id="searchInput" placeholder="z. B. Wohnung, Reklamation, Bewerbung, Internet …">
+   <div class="search-results" id="searchResults"></div>
+  </div>
+  <aside class="panel">
+   <h2 style="margin-top:0">Filter</h2>
+   <div class="badge-row" id="tagCloud"></div>
+   <div class="callout" style="margin-top:15px">Die Suchseite ist bewusst getrennt vom Trainer: So kannst du schnell Material finden, ohne deine aktuelle Übung zu verlieren.</div>
+  </aside>
+ </div>
+</section>
+
+<section class="view" id="exam">
+ <div class="panel exam">
+  <div class="panel-head"><div><h2>🎯 Prüfungsmodus</h2><span class="muted">10 Fragen · keine Farben · kein Zurück</span></div><span class="pill" id="examCount">0 / 10</span></div>
+  <div class="progress"><i id="examProgress"></i></div>
+  <div id="examBody"></div>
+ </div>
+</section>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================================
+   DATA LAYER
+   Add a new letter object here — the UI needs no changes.
+   ========================================================== */
+const coreLetters = [
+ {title:"Reklamation: Akkubetriebene Fahrradpumpe",level:"B2",tags:["Reklamation","Produkt","Technik"],s:[
+  ["Sehr geehrte Damen und Herren,","Anrede"],
+  ["mit diesem Schreiben möchte ich eine formelle Reklamation bezüglich der akkubetriebenen Fahrradpumpe einreichen, die ich am 12. Juli in Ihrer Filiale erworben habe.","Einleitung"],
+  ["Auf der Verpackung wird ausdrücklich zugesichert, dass dieses Modell mühelos einen Druck von bis zu zehn Bar aufbauen kann und sich somit problemlos für Rennrad- und Autoreifen eignet.","Hauptteil"],
+  ["Leider musste ich feststellen, dass das Gerät bereits bei einem Druck von vier Bar überhitzt und sich automatisch abschaltet, was die beworbene Leistung völlig verfehlt.","Hauptteil"],
+  ["Darüber hinaus ist der mitgelieferte Ventiladapter derart unpräzise verarbeitet, dass beim Aufpumpen kontinuierlich Luft entweicht.","Hauptteil"],
+  ["Daher fordere ich Sie hiermit auf, mir ein funktionierendes Ersatzgerät zur Verfügung zu stellen oder den vollen Kaufpreis zu erstatten.","Schlusssatz"],
+  ["Bitte teilen Sie mir bis zum Ende der nächsten Woche schriftlich mit, wie wir in dieser Angelegenheit weiter verfahren werden.","Schlusssatz"],
+  ["Mit freundlichen Grüßen,","Grußformel"]
+ ]},
+ {title:"Initiativbewerbung: Frontend-Entwickler für Esports-Plattform",level:"C1",tags:["Bewerbung","IT","Esports"],s:[
+  ["Sehr geehrte Frau Müller,","Anrede"],
+  ["mit großem Interesse habe ich Ihre Ausschreibung für die Position als Frontend-Entwickler gelesen und bewerbe mich hiermit um die Mitarbeit an der Neugestaltung Ihrer Esports-Plattform.","Einleitung"],
+  ["In den vergangenen Jahren habe ich mich intensiv mit der Entwicklung dynamischer, responsiver Webseiten beschäftigt und umfangreiche Erfahrungen in HTML, CSS und modernem JavaScript gesammelt.","Hauptteil"],
+  ["Besonders reizt mich die Möglichkeit, interaktive Features wie animierte Spielerprofile und Team-Tabellen zu implementieren, um das Fan-Erlebnis auf ein neues Niveau zu heben.","Hauptteil"],
+  ["Da ich selbst die kompetitive Gaming-Szene verfolge, verstehe ich die visuellen und technischen Ansprüche der Zielgruppe.","Hauptteil"],
+  ["Gerne überzeuge ich Sie in einem persönlichen Gespräch oder anhand einer Arbeitsprobe von meinen technischen Fähigkeiten und meiner kreativen Vision.","Schlusssatz"],
+  ["Ich freue mich auf Ihre Rückmeldung und stehe für weitere Fragen jederzeit zur Verfügung.","Schlusssatz"],
+  ["Mit freundlichen Grüßen,","Grußformel"]
+ ]},
+ {title:"Anfrage: Langfristige Pacht einer Kleingartenparzelle",level:"B2",tags:["Wohnen","Garten","Anfrage"],s:[
+  ["Sehr geehrter Herr Vorsitzender,","Anrede"],
+  ["ich wende mich an Sie, um mein großes Interesse an der langfristigen Pacht einer aktuell leerstehenden Parzelle zu bekunden.","Einleitung"],
+  ["Bisher habe ich meine Leidenschaft für den Pflanzenanbau ausschließlich auf meinem Balkon ausgelebt und verschiedene Nutzpflanzen in großen Kübeln kultiviert.","Hauptteil"],
+  ["Dabei lege ich besonderen Wert auf nachhaltige Methoden und stelle beispielsweise organischen Dünger aus geeigneten Haushaltsabfällen her.","Hauptteil"],
+  ["Da meine Pflanzen zunehmend mehr Platz benötigen, wäre ein eigener Garten für mich ideal.","Hauptteil"],
+  ["Selbstverständlich wäre ich bereit, mich aktiv an den regelmäßig anfallenden Gemeinschaftsarbeiten zu beteiligen.","Schlusssatz"],
+  ["Über eine Einladung zu einem persönlichen Kennenlernen würde ich mich außerordentlich freuen.","Schlusssatz"],
+  ["Mit freundlichen Grüßen,","Grußformel"]
+ ]},
+ {title:"Veranstaltungsanfrage: Indoor-Konzert für Progressive Metal",level:"C1",tags:["Veranstaltung","Musik","Anfrage"],s:[
+  ["Sehr geehrtes Veranstaltungsteam,","Anrede"],
+  ["im Namen unserer lokalen Kulturinitiative möchte ich die Verfügbarkeit Ihrer Räumlichkeiten für ein geplantes Indoor-Festival im kommenden Herbst anfragen.","Einleitung"],
+  ["Wir planen eine ganztägige Musikveranstaltung mit Schwerpunkt auf Progressive Metal und Rock und erwarten etwa dreihundert Besucherinnen und Besucher.","Hauptteil"],
+  ["Da dieses Genre durch komplexe Arrangements und dynamische Wechsel gekennzeichnet ist, sind eine erstklassige Akustik sowie moderne Ton- und Lichttechnik für uns von hoher Priorität.","Hauptteil"],
+  ["Wir würden uns freuen, wenn Sie uns ein unverbindliches Angebot zukommen lassen könnten, das Raum- und Technikpersonalkosten umfasst.","Schlusssatz"],
+  ["Zudem möchten wir gerne wissen, ob der Getränkeverkauf in Eigenregie organisiert werden kann.","Schlusssatz"],
+  ["Mit freundlichen Grüßen,","Grußformel"]
+ ]},
+ {title:"Sprachkursanfrage: Intensivtraining für Grammatik und Passiv",level:"C1",tags:["Sprachkurs","Deutsch","Weiterbildung"],s:[
+  ["Sehr geehrte Leitung der Sprachschule,","Anrede"],
+  ["mit diesem Schreiben möchte ich mich nach Fortbildungsangeboten für fortgeschrittene Deutschlernende erkundigen, da ich meine schriftsprachlichen Fähigkeiten auf C1-Niveau anheben möchte.","Einleitung"],
+  ["Obwohl ich mich im alltäglichen Gespräch sicher ausdrücken kann, fehlt mir in formellen Texten teilweise noch die nötige stilistische Präzision.","Hauptteil"],
+  ["Insbesondere bereitet mir die natürliche Anwendung des Passivs sowie die Transformation von Aktiv- in Passivsätze Schwierigkeiten.","Hauptteil"],
+  ["Daher suche ich nach einem kompakten Intensivkurs mit Schwerpunkt auf komplexen Grammatikstrukturen und wissenschaftlichem Schreiben.","Hauptteil"],
+  ["Könnten Sie mir bitte Informationsmaterial zu Ihren Abend- oder Wochenendkursen zusenden?","Schlusssatz"],
+  ["Ein Einstufungstest wäre meinerseits selbstverständlich jederzeit online oder vor Ort möglich.","Schlusssatz"],
+  ["Mit freundlichen Grüßen,","Grußformel"]
+ ]}
+];
+
+const themes = [
+ ["Wohnungsbewerbung für eine 3-Zimmer-Altbauwohnung","Wohnung","B2","Wohnen"],
+ ["Kündigung des Fitnessstudio-Vertrags wegen Umzug","Kündigung","B2","Vertrag"],
+ ["Beschwerde über eine verspätete Online-Lieferung","Lieferung","B2","Reklamation"],
+ ["Anfrage für einen Internetanschluss und Glasfasertarif","Internet","B2","Technik"],
+ ["Bewerbung als Projektmanager im Marketingbereich","Bewerbung","B2","Beruf"],
+ ["Schadensmeldung an die Haushaltsversicherung","Versicherung","B2","Finanzen"],
+ ["Anfrage wegen eines berufsbegleitenden Abendkurses","Weiterbildung","B2","Bildung"],
+ ["Reklamation wegen eines defekten Laptops","Laptop","B2","Technik"],
+ ["Beschwerde über Lärm in einer Ferienwohnung","Ferienwohnung","B2","Reklamation"],
+ ["Anfrage zur Mitgliedschaft in einem Sportverein","Sportverein","B2","Freizeit"],
+ ["Bitte um Fristverlängerung bei einer Behörde","Behörde","B2","Verwaltung"],
+ ["Anfrage zur Anerkennung eines ausländischen Abschlusses","Anerkennung","C1","Bildung"],
+ ["Bewerbung als IT-Support-Spezialist","IT-Support","B2","Beruf"],
+ ["Reklamation wegen falscher Rechnung","Rechnung","B2","Finanzen"],
+ ["Anfrage zur Nutzung eines Konferenzraums","Konferenzraum","B2","Veranstaltung"],
+ ["Beschwerde über einen unfreundlichen Kundenservice","Kundenservice","B2","Reklamation"],
+ ["Anfrage für einen Praktikumsplatz","Praktikum","B2","Beruf"],
+ ["Kündigung eines Mobilfunkvertrags","Mobilfunk","B2","Vertrag"],
+ ["Anfrage zur Reparatur einer Waschmaschine","Reparatur","B2","Haushalt"],
+ ["Bitte um Auskunft zu einem Mietvertrag","Mietvertrag","C1","Wohnen"]
+];
+
+const intros = {
+ "Wohnung":"mit großem Interesse habe ich Ihre Anzeige gelesen und möchte mich hiermit um die ausgeschriebene Wohnung bewerben.",
+ "Kündigung":"hiermit möchte ich meinen Vertrag unter Einhaltung der vereinbarten Frist zum nächstmöglichen Zeitpunkt kündigen.",
+ "Lieferung":"ich wende mich an Sie, da die von mir bestellte Ware trotz der angekündigten Lieferzeit bislang nicht eingetroffen ist.",
+ "Internet":"ich erkundige mich hiermit nach den verfügbaren Internet- und Glasfasertarifen für meine neue Anschrift.",
+ "Bewerbung":"mit großem Interesse habe ich Ihre Stellenausschreibung gelesen und möchte mich hiermit um die ausgeschriebene Position bewerben.",
+ "Versicherung":"hiermit möchte ich Ihnen einen Schaden melden, der sich vor wenigen Tagen in meiner Wohnung ereignet hat.",
+ "Weiterbildung":"ich möchte mich nach geeigneten Weiterbildungsangeboten erkundigen, die sich mit meinen beruflichen Zielen vereinbaren lassen.",
+ "Laptop":"ich möchte den von mir erworbenen Laptop reklamieren, da bereits nach kurzer Nutzungsdauer erhebliche technische Probleme aufgetreten sind.",
+ "Ferienwohnung":"leider musste ich während meines Aufenthalts feststellen, dass mehrere zugesagte Leistungen nicht den Angaben in Ihrer Beschreibung entsprachen.",
+ "Sportverein":"ich interessiere mich für eine Mitgliedschaft in Ihrem Verein und möchte mich vorab über die wichtigsten Bedingungen informieren.",
+ "Behörde":"ich wende mich an Sie mit der Bitte, die Frist für die Einreichung der noch ausstehenden Unterlagen zu verlängern.",
+ "Anerkennung":"ich möchte mich erkundigen, welche Unterlagen für die Anerkennung meines im Ausland erworbenen Hochschulabschlusses erforderlich sind.",
+ "IT-Support":"mit großem Interesse bewerbe ich mich um die ausgeschriebene Position, da ich meine technischen Kenntnisse gerne in Ihrem Unternehmen einsetzen möchte.",
+ "Rechnung":"bei der Durchsicht der aktuellen Rechnung ist mir eine Position aufgefallen, die ich nicht nachvollziehen kann.",
+ "Konferenzraum":"im Zusammenhang mit einer geplanten Veranstaltung möchte ich mich nach der Verfügbarkeit Ihrer Konferenzräume erkundigen.",
+ "Kundenservice":"ich wende mich an Sie, weil ich mit der Bearbeitung meines Anliegens durch Ihren Kundenservice unzufrieden bin.",
+ "Praktikum":"mit großem Interesse möchte ich mich nach der Möglichkeit eines Praktikums in Ihrem Unternehmen erkundigen.",
+ "Mobilfunk":"hiermit möchte ich meinen Mobilfunkvertrag zum nächstmöglichen Zeitpunkt kündigen.",
+ "Reparatur":"ich möchte mich erkundigen, wann ein Techniker zur Reparatur meines defekten Haushaltsgeräts zu mir kommen könnte.",
+ "Mietvertrag":"vor Abschluss des Mietvertrags möchte ich noch einige Punkte klären und bitte Sie daher um entsprechende Auskunft."
+};
+
+const bodySets = [
+ ["Bei der Nutzung beziehungsweise Prüfung musste ich feststellen, dass die tatsächlichen Bedingungen erheblich von den zuvor gemachten Angaben abweichen.",
+  "Da ich auf eine zuverlässige und zeitnahe Lösung angewiesen bin, bitte ich Sie, den Sachverhalt sorgfältig zu prüfen und mir eine nachvollziehbare Rückmeldung zu geben."],
+ ["Besonders problematisch ist aus meiner Sicht, dass die Angelegenheit inzwischen zu erheblichen zusätzlichen Kosten beziehungsweise organisatorischen Schwierigkeiten geführt hat.",
+  "Darüber hinaus möchte ich darauf hinweisen, dass ich die vereinbarten Bedingungen meinerseits vollständig eingehalten habe."],
+ ["Obwohl ich zunächst von einer unkomplizierten Abwicklung ausgegangen bin, hat sich die Situation leider anders entwickelt.",
+  "Aus diesem Grund wäre ich Ihnen dankbar, wenn Sie mir zeitnah mitteilen könnten, welche konkreten Schritte nun vorgesehen sind."]
+];
+const closeSets = [
+ ["Ich bitte Sie daher, mir innerhalb von fünf Werktagen schriftlich mitzuteilen, wie Sie den Vorgang zu lösen beabsichtigen.",
+  "Für eine schnelle und kundenorientierte Klärung der Angelegenheit wäre ich Ihnen sehr dankbar."],
+ ["Sollten Sie noch weitere Unterlagen benötigen, lasse ich Ihnen diese selbstverständlich umgehend zukommen.",
+  "Über eine zeitnahe Rückmeldung würde ich mich sehr freuen."],
+ ["Ich hoffe, dass wir gemeinsam eine zufriedenstellende Lösung finden können.",
+  "Für Ihre Unterstützung und Ihre Mühe bedanke ich mich im Voraus."]
+];
+
+function makeGenerated(index, theme){
+ const [topic, key, level, tag] = theme;
+ const sal = index%3===0 ? "Sehr geehrte Damen und Herren," : index%3===1 ? "Sehr geehrte Frau Schmidt," : "Sehr geehrter Herr Weber,";
+ const b = bodySets[index%bodySets.length], c = closeSets[index%closeSets.length];
+ return {title:`${index}. ${topic}`,level,tags:[tag,key],s:[
+   [sal,"Anrede"],[intros[key],"Einleitung"],[b[0],"Hauptteil"],[b[1],"Hauptteil"],[c[0],"Schlusssatz"],[c[1],"Schlusssatz"],["Mit freundlichen Grüßen,","Grußformel"]
+ ]};
+}
+const letters=[...coreLetters];
+for(let i=6;i<=100;i++) letters.push(makeGenerated(i,themes[(i-6)%themes.length]));
+
+/* ==========================================================
+   APP STATE
+   ========================================================== */
+const state={
+ index:0, order:[], solved:0, perfect:0, xp:0, streak:0, correct:0,
+ history:JSON.parse(localStorage.getItem("letterLabStats")||"{}"),
+ dark:true
+};
+state.solved=state.history.solved||0;state.perfect=state.history.perfect||0;state.xp=state.history.xp||0;state.streak=state.history.streak||0;
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+function save(){localStorage.setItem("letterLabStats",JSON.stringify({solved:state.solved,perfect:state.perfect,xp:state.xp,streak:state.streak}));}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),1800)}
+function words(s){return s.join(" ").trim().split(/\s+/).length}
+function catClass(c){return c==="Anrede"?"anrede":c==="Einleitung"?"intro":c==="Hauptteil"?"body":c==="Schlusssatz"?"close":"greet"}
+function catColor(c){return `var(--${catClass(c)})`}
+
+function populate(){
+ const sel=$("#letterSelect");
+ sel.innerHTML=letters.map((l,i)=>`<option value="${i}">${esc(l.title)} · ${l.level}</option>`).join("");
+ renderLetter(0,true);renderRefs();renderSearch();renderStats();startExam();
+}
+function renderLetter(i,shuffle=true){
+ state.index=Number(i);const l=letters[state.index];
+ let order=l.s.map((x,n)=>({text:x[0],cat:x[1],original:n}));
+ if(shuffle) order.sort(()=>Math.random()-.5);
+ state.order=order;
+ $("#letterSelect").value=state.index;
+ $("#letterMeta").textContent=`${l.level} · ${l.tags.join(" · ")} · Aufgabe ${state.index+1}`;
+ $("#wordBadge").textContent=`${words(l.s)} Wörter`;
+ $("#sideIndex").textContent=`${state.index+1} / ${letters.length}`;
+ $("#sideDiff").textContent=l.level;
+ $("#sideCorrect").textContent="—";
+ $("#feedback").className="feedback";
+ $("#downloadBtn").style.display="none";
+ const list=$("#sentenceList");list.innerHTML="";
+ order.forEach((item,i)=>list.appendChild(sentenceNode(item,i)));
+}
+function sentenceNode(item,i){
+ const li=document.createElement("li");li.className="sentence";li.draggable=true;li.dataset.original=item.original;li.style.setProperty("--cat",catColor(item.cat));
+ li.innerHTML=`<div class="handle">⠿</div><div><div class="sentence-text">${esc(item.text)}</div><span class="cat-label">${item.cat}</span></div>
+ <div class="move"><button title="Nach oben">▲</button><button title="Nach unten">▼</button></div>`;
+ li.querySelectorAll(".move button")[0].onclick=e=>move(li,-1);
+ li.querySelectorAll(".move button")[1].onclick=e=>move(li,1);
+ li.addEventListener("dragstart",()=>li.classList.add("dragging"));
+ li.addEventListener("dragend",()=>li.classList.remove("dragging"));
+ return li;
+}
+function move(li,dir){
+ const list=$("#sentenceList");
+ if(dir<0&&li.previousElementSibling)list.insertBefore(li,li.previousElementSibling);
+ if(dir>0&&li.nextElementSibling)list.insertBefore(li.nextElementSibling,li);
+}
+$("#sentenceList").addEventListener("dragover",e=>{
+ e.preventDefault();const drag=$(".sentence.dragging");if(!drag)return;
+ const els=$$(".sentence:not(.dragging)");const next=els.find(x=>e.clientY<x.getBoundingClientRect().top+x.offsetHeight/2);
+ $("#sentenceList").insertBefore(drag,next||null);
+});
+function check(){
+ const target=letters[state.index].s.map(x=>x[0]), items=$$(".sentence");
+ let good=0;items.forEach((el,i)=>{el.classList.remove("correct","incorrect");if(el.dataset.original==i){el.classList.add("correct");good++}else el.classList.add("incorrect")});
+ state.correct=good;state.solved++;state.xp+=good*5;state.perfect+=good===target.length?1:0;state.streak=good===target.length?state.streak+1:0;save();renderStats();
+ $("#sideCorrect").textContent=`${good} / ${target.length}`;
+ const fb=$("#feedback");fb.className="feedback show "+(good===target.length?"good":"bad");
+ fb.innerHTML=good===target.length?`🎉 <b>Perfekt!</b> +${target.length*5} XP — diese Struktur sitzt.`:`${good}/${target.length} Positionen richtig. <b>Grün</b> ist korrekt, rot braucht noch Aufmerksamkeit.`;
+ if(good===target.length)$("#downloadBtn").style.display="inline-block";
+}
+function showSolution(){renderLetter(state.index,false);state.order=letters[state.index].s.map((x,n)=>({text:x[0],cat:x[1],original:n}));renderLetterFromState();}
+function renderLetterFromState(){const list=$("#sentenceList");list.innerHTML="";state.order.forEach((x,i)=>list.appendChild(sentenceNode(x,i)));$("#downloadBtn").style.display="inline-block";$("#feedback").className="feedback show good";$("#feedback").innerHTML="👁 Lösung eingeblendet. Jetzt kannst du den Brief als Muster abschreiben."}
+function exportLetter(){
+ const l=letters[state.index];const text=l.s.map((x,i)=>x[0]+(i===0||x[1]==="Grußformel"?"\n\n":"")).join("").trim()+"\n";
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/plain;charset=utf-8"}));a.download="brief-"+(state.index+1)+".txt";a.click();URL.revokeObjectURL(a.href);
+}
+function renderStats(){
+ $("#mSolved").textContent=state.solved;$("#mPerfect").textContent=state.perfect;$("#mRate").textContent=state.solved?Math.round(state.perfect/state.solved*100)+"%":"0%";$("#mStreak").textContent=state.streak;$("#sessionScore").textContent=state.xp+" XP";$("#progressBar").style.width=Math.min(100,state.perfect/10*100)+"%";
+}
+const refs=[
+ ["Anrede",["Sehr geehrte Damen und Herren,","Sehr geehrte Frau … / Sehr geehrter Herr …,","Sehr geehrte Leitung …,"]],
+ ["Einleitung & Bezug",["Bezugnehmend auf Ihr Schreiben vom …","Vielen Dank für Ihre Nachricht. Ich wende mich an Sie, um …","Mit großem Interesse habe ich Ihre Ausschreibung gelesen …"]],
+ ["Begründung",["Aufgrund von …","Da …, möchte ich …","Der Grund dafür liegt darin, dass …","Dies ist insbesondere darauf zurückzuführen, dass …"]],
+ ["Argumentation",["Einerseits …, andererseits …","Darüber hinaus ist zu berücksichtigen, dass …","Ein weiterer entscheidender Aspekt besteht darin, dass …","Nicht zuletzt möchte ich darauf hinweisen, dass …"]],
+ ["Forderung & Lösung",["Ich bitte Sie daher, …","Ich wäre Ihnen dankbar, wenn Sie …","Ich erwarte eine schriftliche Rückmeldung bis …","Wir würden es begrüßen, wenn …"]],
+ ["Schluss",["Für weitere Fragen stehe ich Ihnen jederzeit gerne zur Verfügung.","Über eine zeitnahe Rückmeldung würde ich mich sehr freuen.","Ich hoffe, dass wir gemeinsam eine zufriedenstellende Lösung finden können."]],
+ ["Konnektoren",["deshalb · daher · somit · infolgedessen","allerdings · jedoch · dennoch · hingegen","darüber hinaus · außerdem · zusätzlich","zunächst · anschließend · danach · schließlich"]],
+ ["B2 → C1",["Das geht nicht. → Leider ist dies derzeit nicht möglich.","Wir prüfen das. → Wir werden den Sachverhalt sorgfältig prüfen.","Ich will … → Ich möchte … / Ich beabsichtige …","Das ist wichtig. → Dies ist von besonderer Bedeutung."]]
+];
+function renderRefs(){$("#refGrid").innerHTML=refs.map(r=>`<article class="ref-card"><h3>${r[0]}</h3><ul>${r[1].map(x=>`<li>${esc(x)}</li>`).join("")}</ul></article>`).join("")}
+function renderSearch(q=""){
+ const query=q.trim().toLowerCase();let hits=letters.filter(l=>!query||(l.title+" "+l.tags.join(" ")+" "+l.s.map(x=>x[0]).join(" ")).toLowerCase().includes(query)).slice(0,60);
+ $("#searchResults").innerHTML=hits.length?hits.map(l=>{const i=letters.indexOf(l);return `<div class="result" data-i="${i}"><b>${esc(l.title)}</b><small>${l.level} · ${esc(l.tags.join(" · "))}</small></div>`}).join(""):`<div class="empty">Keine passenden Briefe gefunden.</div>`;
+ $$(".result").forEach(r=>r.onclick=()=>{$("[data-view='trainer']").click();renderLetter(Number(r.dataset.i),true);window.scrollTo({top:0,behavior:"smooth"})});
+ $("#tagCloud").innerHTML=[...new Set(letters.flatMap(l=>l.tags))].sort().map(t=>`<span class="tag">${esc(t)}</span>`).join("");
+}
+
+/* Exam mode */
+let exam={items:[],pos:0,score:0,answered:false};
+function makeExamItem(){
+ const l=letters[Math.floor(Math.random()*letters.length)], target=Math.floor(Math.random()*l.s.length);
+ const correct=l.s[target], pool=l.s.filter((x,i)=>i!==target).sort(()=>Math.random()-.5).slice(0,3);
+ const opts=[correct,...pool].sort(()=>Math.random()-.5);
+ return {q:`Welche Textfunktion passt zu diesem Satz?`,sentence:correct[0],answer:correct[1],opts};
+}
+function startExam(){exam={items:Array.from({length:10},makeExamItem),pos:0,score:0,answered:false};renderExam()}
+function renderExam(){
+ const item=exam.items[exam.pos];$("#examCount").textContent=`${Math.min(exam.pos+1,10)} / 10`;$("#examProgress").style.width=(exam.pos/10*100)+"%";
+ if(!item){$("#examBody").innerHTML=`<div class="callout" style="margin-top:18px"><h2 style="margin-top:0">Ergebnis: ${exam.score} / 10</h2><p>Starte den Modus erneut und versuche, deine Punktzahl zu übertreffen.</p><button class="btn primary" id="restartExam">↻ Neuer Versuch</button></div>`;$("#restartExam").onclick=startExam;return}
+ $("#examBody").innerHTML=`<p class="muted">Aufgabe ${exam.pos+1}</p><div class="exam-question">„${esc(item.sentence)}“</div><div class="options">${item.opts.map((o,i)=>`<button class="option" data-i="${i}">${esc(o[1])}</button>`).join("")}</div>`;
+ $$(".option").forEach((b,i)=>b.onclick=()=>answerExam(i));
+}
+function answerExam(i){
+ if(exam.answered)return;exam.answered=true;const item=exam.items[exam.pos], buttons=$$(".option"),chosen=item.opts[i];
+ buttons.forEach((b,n)=>{if(item.opts[n][1]===item.answer)b.classList.add("good");else if(n===i)b.classList.add("bad")});
+ if(chosen[1]===item.answer){exam.score++;state.xp+=10;save();renderStats();toast("✓ Richtig · +10 XP")}
+ else toast("Nicht ganz — die Funktion war: "+item.answer);
+ setTimeout(()=>{exam.pos++;exam.answered=false;renderExam()},650);
+}
+
+/* Navigation + controls */
+$$(".nav button").forEach(b=>b.onclick=()=>{$$(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");$$(".view").forEach(v=>v.classList.remove("active"));$("#"+b.dataset.view).classList.add("active")});
+$("#letterSelect").onchange=e=>renderLetter(e.target.value,true);
+$("#shuffleBtn").onclick=()=>renderLetter(state.index,true);
+$("#randomBtn").onclick=()=>renderLetter(Math.floor(Math.random()*letters.length),true);
+$("#checkBtn").onclick=check;$("#solutionBtn").onclick=showSolution;$("#downloadBtn").onclick=exportLetter;
+$("#searchInput").oninput=e=>renderSearch(e.target.value);
+$("#themeBtn").onclick=()=>{document.body.classList.toggle("light");toast("Theme gewechselt")};
+$("#resetBtn").onclick=()=>{if(confirm("Gesamten Lernfortschritt zurücksetzen?")){state.solved=state.perfect=state.xp=state.streak=0;save();renderStats();toast("Fortschritt zurückgesetzt")}};
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&$("#trainer").classList.contains("active"))check()});
+document.addEventListener("keydown",e=>{
+ if(!$("#trainer").classList.contains("active"))return;
+ if(!["ArrowUp","ArrowDown"].includes(e.key))return;
+ const items=$$(".sentence"), active=document.activeElement.closest?.(".sentence");if(!active)return;
+ e.preventDefault();move(active,e.key==="ArrowUp"?-1:1);
+});
+populate();
+</script>
+</body>
+</html>
